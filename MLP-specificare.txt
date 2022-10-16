@@ -1,0 +1,24 @@
+<program>		->	#include <iostream>
+					using namespace std <delim>
+					int main() { <lista_instr> return CONST <delim> }
+<lista_instr> 	-> 	<instr> | <instr> <lista_instr>
+<instr> 		-> 	<def_tip> | <decl> | <atrib> | <selectie> | <ciclare> | <citire> | <scriere>
+
+<def_tip> 		->	typedef struct ID_TIP { <lista_decl> } ID_TIP <delim>
+<lista_decl>	->	<decl> | <decl> <lista_decl>
+
+<decl> 			-> 	<tip> ID <delim>
+<tip>			-> 	int | double | ID_TIP
+
+<atrib>			-> 	ID = <expr> <delim>
+<expr>			-> 	ID | CONST | <expr> <op_aritmetic> <expr>
+<op_aritmetic>	-> 	+ | - | * | / | %
+
+<selectie>		->	if ( <cond> ) { <lista_instr> }
+<cond>			-> 	<expr> <op_logic> <expr>
+
+<ciclare>		->	while ( <cont> ) { <lista_instr> }
+
+<citire>		-> 	cin >> ID <delim>
+
+<scriere>		-> 	cout << ID <delim>
