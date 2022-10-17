@@ -15,7 +15,8 @@
 <decl> 					-> 	<tip> ID <delim_instr>
 <tip>					-> 	int | double | ID_TIP
 
-<atrib>					-> 	ID = <expr> <delim_instr>
+<atrib>					-> 	ID <op_atribuire> <expr> <delim_instr>
+<op_atribuire>          ->  =
 <expr>					-> 	ID | CONST | <expr> <op_aritmetic> <expr>
 <op_aritmetic>			-> 	+ | - | * | / | %
 
