@@ -7,7 +7,7 @@
 <delim_bloc_deschis> 	-> 	{
 <delim_bloc_inchis>		->	}
 <lista_instr> 			-> 	<instr> | <instr> <lista_instr>
-<instr> 				-> 	<def_tip> | <decl> | <atrib> | <selectie> | <ciclare> | <citire> | <scriere>
+<instr> 				-> 	<def_tip> | <decl> | <atrib> | <selectie> | <ciclare> | <citire> | <scriere> | <ciclare_inversa>
 
 <def_tip> 				->	typedef struct ID_TIP <delim_bloc_deschis> <lista_decl> <delim_bloc_inchis> ID_TIP <delim_instr>
 <lista_decl>			->	<decl> | <decl> <lista_decl>
@@ -24,7 +24,9 @@
 <cond>					-> 	<expr> <op_logic> <expr>
 <op_logic>				-> 	< | > | != | ==
 
-<ciclare>				->	while <delim_cond_deschis> <cont> <delim_cond_inchis> <delim_bloc_deschis> <lista_instr> <delim_bloc_inchis>
+<ciclare>				->	while <delim_cond_deschis> <cond> <delim_cond_inchis> <delim_bloc_deschis> <lista_instr> <delim_bloc_inchis>
+
+<ciclare_inversa>       ->  do <delim_bloc_deschis> <lista_instr> <delim_bloc_inchis> while <delim_cond_deschis> <cond> <delim_cond_inchis> <delim_instr>
 
 <citire>				-> 	cin >> ID <delim_instr>
 
