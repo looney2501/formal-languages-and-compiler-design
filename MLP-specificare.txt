@@ -1,24 +1,30 @@
-<program>		->	#include <iostream>
-					using namespace std <delim>
-					int main() { <lista_instr> return CONST <delim> }
-<lista_instr> 	-> 	<instr> | <instr> <lista_instr>
-<instr> 		-> 	<def_tip> | <decl> | <atrib> | <selectie> | <ciclare> | <citire> | <scriere>
+<program>>				->	#include <iostream>
+							using namespace std <delim_instr>
+							<tip> main <delim_cond_deschis> <delim_cond_inchis> <delim_bloc_deschis> <lista_instr> return CONST <delim_instr> <delim_bloc_inchis>
+<delim_cond_deschis>	->	(
+<delim_cond_inchis>		->	)
+<delim_instr>			->  ;
+<delim_bloc_deschis> 	-> 	{
+<delim_bloc_inchis>		->	}
+<lista_instr> 			-> 	<instr> | <instr> <lista_instr>
+<instr> 				-> 	<def_tip> | <decl> | <atrib> | <selectie> | <ciclare> | <citire> | <scriere>
 
-<def_tip> 		->	typedef struct ID_TIP { <lista_decl> } ID_TIP <delim>
-<lista_decl>	->	<decl> | <decl> <lista_decl>
+<def_tip> 				->	typedef struct ID_TIP <delim_bloc_deschis> <lista_decl> <delim_bloc_inchis> ID_TIP <delim_instr>
+<lista_decl>			->	<decl> | <decl> <lista_decl>
 
-<decl> 			-> 	<tip> ID <delim>
-<tip>			-> 	int | double | ID_TIP
+<decl> 					-> 	<tip> ID <delim_instr>
+<tip>					-> 	int | double | ID_TIP
 
-<atrib>			-> 	ID = <expr> <delim>
-<expr>			-> 	ID | CONST | <expr> <op_aritmetic> <expr>
-<op_aritmetic>	-> 	+ | - | * | / | %
+<atrib>					-> 	ID = <expr> <delim_instr>
+<expr>					-> 	ID | CONST | <expr> <op_aritmetic> <expr>
+<op_aritmetic>			-> 	+ | - | * | / | %
 
-<selectie>		->	if ( <cond> ) { <lista_instr> }
-<cond>			-> 	<expr> <op_logic> <expr>
+<selectie>				->	if <delim_cond_deschis> <cond> <delim_cond_inchis> <delim_bloc_deschis> <lista_instr> <delim_bloc_inchis>
+<cond>					-> 	<expr> <op_logic> <expr>
+<op_logic>				-> 	< | > | != | ==
 
-<ciclare>		->	while ( <cont> ) { <lista_instr> }
+<ciclare>				->	while <delim_cond_deschis> <cont> <delim_cond_inchis> <delim_bloc_deschis> <lista_instr> <delim_bloc_inchis>
 
-<citire>		-> 	cin >> ID <delim>
+<citire>				-> 	cin >> ID <delim_instr>
 
-<scriere>		-> 	cout << ID <delim>
+<scriere>				-> 	cout << ID <delim_instr>
