@@ -15,16 +15,12 @@ public class LexicalAnalyser {
     private static final Pattern blockClosedDelimiterPattern = Pattern.compile("^(})$");
     private static final Pattern instructionDelimiterPattern = Pattern.compile("^(;)$");
     private static final Pattern otherDelimiterPattern = Pattern.compile("^(!)$");
-
     private static final Pattern constantIntegerPattern = Pattern.compile("^([+-]?[0-9]+)$");
     private static final Pattern constantRealPattern = Pattern.compile("^([+-]?(([0-9]+\\.[0-9]+)|([0-9]+)))$");
-    private static final Pattern constantStringPattern = Pattern.compile("^(\"[^\" ]*\")$");
-
     private static final Pattern identifierPattern = Pattern.compile("^([_a-zA-Z])([_a-zA-Z0-9])*$");
-
     private static final Pattern keywordPattern = Pattern.compile(
             "^(#include|<iostream>|using|namespace|std|main|return|" +
-                    "typedef|struct|int|double|if|while|cin|cout)$");
+                    "typedef|struct|int|double|if|while|cin|cout|endl)$");
 
     public static void analyse(String path) {
         tokens = new ArrayList<>();
@@ -178,8 +174,7 @@ public class LexicalAnalyser {
 
     private static boolean isConstant(String token) {
         return constantIntegerPattern.matcher(token).matches() ||
-                constantRealPattern.matcher(token).matches() ||
-                constantStringPattern.matcher(token).matches();
+                constantRealPattern.matcher(token).matches();
     }
 
     private static boolean validIdentifier(String token) {

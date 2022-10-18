@@ -11,6 +11,7 @@
 
 <def_tip> 				->	typedef struct ID_TIP <delim_bloc_deschis> <lista_decl> <delim_bloc_inchis> ID_TIP <delim_instr>
 <lista_decl>			->	<decl> | <decl> <lista_decl>
+ID_TIP                  ->  ID
 
 <decl> 					-> 	<tip> ID <delim_instr>
 <tip>					-> 	int | double | ID_TIP
@@ -30,4 +31,5 @@
 
 <citire>				-> 	cin >> ID <delim_instr>
 
-<scriere>				-> 	cout << ID <delim_instr>
+<scriere>				-> 	cout << <mesaj_scriere> <delim_instr>
+<mesaj_scriere>         ->  ID | endl
