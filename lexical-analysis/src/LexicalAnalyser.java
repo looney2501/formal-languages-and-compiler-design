@@ -17,7 +17,7 @@ public class LexicalAnalyser {
     private static final Pattern otherDelimiterPattern = Pattern.compile("^(!)$");
     private static final Pattern constantIntegerPattern = Pattern.compile("^([+-]?[0-9]+)$");
     private static final Pattern constantRealPattern = Pattern.compile("^([+-]?(([0-9]+\\.[0-9]+)|([0-9]+)))$");
-    private static final Pattern identifierPattern = Pattern.compile("^([_a-zA-Z])([_a-zA-Z0-9])*$");
+    private static final Pattern identifierPattern = Pattern.compile("^(([_a-zA-Z])([_a-zA-Z0-9]){0,7})$");
     private static final Pattern keywordPattern = Pattern.compile(
             "^(#include|<iostream>|using|namespace|std|main|return|" +
                     "typedef|struct|int|double|if|while|cin|cout|endl)$");
