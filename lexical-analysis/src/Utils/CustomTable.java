@@ -143,7 +143,7 @@ public class CustomTable {
             List<Node> allNodes = new ArrayList<>();
             Node current = root;
             Stack<Node> stack = new Stack<>();
-            int counter = 1;
+            int counter = 0;
 
             while (current != null || stack.size() > 0) {
                 while (current != null) {
@@ -164,10 +164,16 @@ public class CustomTable {
         }
     }
 
-    private static class TableRow {
+    public static class TableRow {
         private final String key;
         private final int code;
         private final ItemType type;
+
+        public TableRow(String key, ItemType type) {
+            this.key = key;
+            this.type = type;
+            this.code = 0;
+        }
 
         public TableRow(String key, int code, ItemType type) {
             this.key = key;

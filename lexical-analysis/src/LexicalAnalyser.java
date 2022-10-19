@@ -1,9 +1,17 @@
+import Utils.CustomTable;
+import Utils.FIPTable;
+import Utils.ItemType;
+
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
 public class LexicalAnalyser {
-    private static List<Map.Entry<String, String>> tokens;
+    private static final List<Map.Entry<String, String>> tokens = new ArrayList<>();
+    private static final CustomTable constantsTable = new CustomTable();
+    private static final CustomTable identifiersTable = new CustomTable();
+    private static final HashMap<String, Integer> atomsTable = new HashMap<>();
+    private static final FIPTable FIPTable = new FIPTable();
     private static final Pattern singleLogicalOperatorPattern = Pattern.compile("^([<>])$");
     private static final Pattern compoundLogicalOperatorPattern = Pattern.compile("^(==|!=)$");
     private static final Pattern arithmeticOperatorPattern = Pattern.compile("^([-+*/%])$");
@@ -19,14 +27,14 @@ public class LexicalAnalyser {
     private static final Pattern constantRealPattern = Pattern.compile("^([+-]?(([0-9]+\\.[0-9]+)|([0-9]+)))$");
     private static final Pattern identifierPattern = Pattern.compile("^(([_a-zA-Z])([_a-zA-Z0-9]){0,7})$");
     private static final Pattern keywordPattern = Pattern.compile(
-            "^(#include|<iostream>|using|namespace|std|main|return|" +
+            "^(#include|iostream|using|namespace|std|main|return|" +
                     "typedef|struct|int|double|if|while|cin|cout|endl)$");
 
     public static void analyse(String path) {
-        tokens = new ArrayList<>();
         try {
             parseLines(new File(path));
-            writeToOutput(new File("resources/analyser-output.txt"));
+            createTables();
+            writeToOutput();
         } catch (LexicalError e) {
             System.err.println(e.getMessage());
         }
@@ -88,12 +96,15 @@ public class LexicalAnalyser {
 
                 if (isKeyword(token)) {
                     tokens.add(new AbstractMap.SimpleEntry<>(token, "Keyword"));
-                } else if (isConstant(token)) {
-                    tokens.add(new AbstractMap.SimpleEntry<>(token, "Constant"));
-                } else if (validIdentifier(token)) {
-                    tokens.add(new AbstractMap.SimpleEntry<>(token, "ID"));
                 } else {
-                    throw new LexicalError(lineNo, right+columnNoDiff);
+                    ItemType type;
+                    if ((type = isConstant(token)) != null) {
+                        tokens.add(new AbstractMap.SimpleEntry<>(token, type.toString()));
+                    } else if (validIdentifier(token)) {
+                        tokens.add(new AbstractMap.SimpleEntry<>(token, "ID"));
+                    } else {
+                        throw new LexicalError(lineNo, right+columnNoDiff);
+                    }
                 }
                 left = right;
             }
@@ -172,9 +183,10 @@ public class LexicalAnalyser {
         return keywordPattern.matcher(token).matches();
     }
 
-    private static boolean isConstant(String token) {
-        return constantIntegerPattern.matcher(token).matches() ||
-                constantRealPattern.matcher(token).matches();
+    private static ItemType isConstant(String token) {
+        if (constantIntegerPattern.matcher(token).matches()) return ItemType.INTEGER;
+        if (constantRealPattern.matcher(token).matches()) return ItemType.DOUBLE;
+        return null;
     }
 
     private static boolean validIdentifier(String token) {
@@ -185,13 +197,125 @@ public class LexicalAnalyser {
         return c.equals(" ");
     }
 
-    private static void writeToOutput(File output) {
-        try (FileWriter writer = new FileWriter(output)) {
-            for (Map.Entry<String, String> entry : tokens) {
-                writer.write(entry.getKey() + " -> " + entry.getValue() + '\n');
+    private static void writeToOutput() {
+        writeConstantsToOutput();
+        writeIdentifiersToOutput();
+        writeAtomsToOutput();
+        writeFIPToOutput();
+    }
+
+    private static void writeConstantsToOutput() {
+        try (FileWriter writer = new FileWriter(new File("resources/analyser-output/constants-table.csv"))) {
+            writer.write("CONSTANT,CODTS,TYPE\n");
+            for (var tableRow : constantsTable.getAll()) {
+                writer.write(tableRow.getKey() + ',' + tableRow.getCode() + ',' + tableRow.getType() + '\n');
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void writeIdentifiersToOutput() {
+        try (FileWriter writer = new FileWriter(new File("resources/analyser-output/identifiers-table.csv"))) {
+            writer.write("ID,CODTS\n");
+            for (var tableRow : identifiersTable.getAll()) {
+                writer.write(tableRow.getKey() + ',' + tableRow.getCode() + '\n');
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeAtomsToOutput() {
+        try (FileWriter writer = new FileWriter(new File("resources/analyser-output/atoms-table.csv"))) {
+            writer.write("ATOM,CODATOM\n");
+            atomsTable.forEach((k, v) -> {
+                try {
+                    writer.write(k + ',' + v + '\n');
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeFIPToOutput() {
+        try (FileWriter writer = new FileWriter(new File("resources/analyser-output/fip-table.csv"))) {
+            writer.write("ATOM,CODATOM,CODTS\n");
+            FIPTable.getAll().forEach(tr -> {
+                try {
+                    writer.write(tr.getAtom() + ',' + tr.getAtomCode() + ',' + tr.getSymbolCode() + '\n');
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void createTables() {
+        createConstantsTable();
+        createIdentifiersTable();
+        createAtomsTable();
+        createFIPTable();
+    }
+    private static void createConstantsTable() {
+        Map<String, ItemType> constants = new HashMap<>();
+        tokens.forEach(entry -> {
+            if (!constants.containsKey(entry.getKey()) && (entry.getValue().equals("DOUBLE") || entry.getValue().equals("INTEGER") )) {
+                constants.put(entry.getKey(), ItemType.valueOf(entry.getValue()));
+            }
+        });
+        List<CustomTable.TableRow> tableRows = new ArrayList<>();
+        constants.forEach((k, v) -> tableRows.add(new CustomTable.TableRow(k, v)));
+        constantsTable.addFromList(tableRows);
+    }
+
+    private static void createIdentifiersTable() {
+        Map<String, ItemType> identifiers = new HashMap<>();
+        tokens.forEach(entry -> {
+            if (!identifiers.containsKey(entry.getKey()) && entry.getValue().equals("ID")) {
+                identifiers.put(entry.getKey(), ItemType.ID);
+            }
+        });
+        List<CustomTable.TableRow> tableRows = new ArrayList<>();
+        identifiers.forEach((k, v) -> tableRows.add(new CustomTable.TableRow(k, v)));
+        identifiersTable.addFromList(tableRows);
+    }
+
+    private static void createAtomsTable() {
+        tokens.forEach(entry -> {
+            if (!atomsTable.containsKey("ID") && entry.getValue().equals("ID")) {
+                atomsTable.put("ID", atomsTable.size());
+            }
+            if (!atomsTable.containsKey("CONSTANT") && (entry.getValue().equals("INTEGER") || entry.getValue().equals("DOUBLE"))) {
+                atomsTable.put("CONST", atomsTable.size());
+            }
+            if (!entry.getValue().equals("ID") && !entry.getValue().equals("INTEGER") && !entry.getValue().equals("DOUBLE")
+                    && !atomsTable.containsKey(entry.getKey())) {
+                atomsTable.put(entry.getKey(), atomsTable.size());
+            }
+        });
+    }
+
+    private static void createFIPTable() {
+        tokens.forEach(entry -> {
+            String key = entry.getKey();
+            Integer atomCode = null;
+            Integer symbolCode = null;
+            if (entry.getValue().equals("ID")) {
+                atomCode = atomsTable.get("ID");
+                symbolCode = identifiersTable.get(key).getCode();
+            } else if (entry.getValue().equals("INTEGER") || entry.getValue().equals("DOUBLE")) {
+                atomCode = atomsTable.get("CONST");
+                symbolCode = constantsTable.get(key).getCode();
+            } else {
+                atomCode = atomsTable.get(key);
+            }
+            FIPTable.addRow(key, atomCode, symbolCode);
+        });
     }
 }
