@@ -287,13 +287,9 @@ public class LexicalAnalyser {
     }
 
     private static void createAtomsTable() {
+        atomsTable.put("ID", 0);
+        atomsTable.put("CONST", 1);
         tokens.forEach(entry -> {
-            if (!atomsTable.containsKey("ID") && entry.getValue().equals("ID")) {
-                atomsTable.put("ID", atomsTable.size());
-            }
-            if (!atomsTable.containsKey("CONSTANT") && (entry.getValue().equals("INTEGER") || entry.getValue().equals("DOUBLE"))) {
-                atomsTable.put("CONST", atomsTable.size());
-            }
             if (!entry.getValue().equals("ID") && !entry.getValue().equals("INTEGER") && !entry.getValue().equals("DOUBLE")
                     && !atomsTable.containsKey(entry.getKey())) {
                 atomsTable.put(entry.getKey(), atomsTable.size());
