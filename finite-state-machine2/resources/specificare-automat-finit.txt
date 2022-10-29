@@ -1,0 +1,15 @@
+<specificare_automat_finit> 	-> <alfabet_stari> '\n' <alfabet_intrare> '\n' <stare_initiala> '\n' <stari_finale> '\n' <lista_tranzitii>
+
+<alfabet_stari>					-> <stare> | <stare> <alfabet_stari>
+
+<alfabet_intrare>				-> <simbol_alfabet> | <simbol_alfabet> <alfabet_intrare>
+
+<stare_initiala>				-> <stare>
+
+<stari_finale>					-> <stare> | <stare> <stari_finale>
+
+<lista_tranzitii>				-> <tranzitie> | <tranzitie> '\n' <lista_tranzitii>
+<tranzitie>						-> <stare> <simbol_alfabet> <stare>
+
+<stare> 						-> CONST
+<simbol_alfabet>				-> CONST
