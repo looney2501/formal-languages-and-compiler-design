@@ -28,7 +28,7 @@ public class Main {
     }
 
     private static void run() {
-        String fileName = "resources\\finite-state-machine-input\\input1.in";
+        String fileName = "resources\\finite-state-machine-input\\Cpp-integers.in";
         try {
             finiteStateMachine = FiniteStateMachine.readFromFile(fileName);
         } catch (IOException e) {
@@ -69,7 +69,8 @@ public class Main {
         System.out.println("Enter a sequence to find its longest accepted prefix:");
         Scanner scanner = new Scanner(System.in);
         String sequence = scanner.nextLine().strip();
-        System.out.println(finiteStateMachine.longestPrefixAccepted(sequence));
+        String longestValidPrefix = finiteStateMachine.longestPrefixAccepted(sequence);
+        System.out.println(longestValidPrefix.isEmpty() ? "No valid prefix" : longestValidPrefix);
     }
 
     private static void checkSequence() {
