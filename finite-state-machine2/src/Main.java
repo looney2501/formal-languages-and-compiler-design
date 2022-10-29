@@ -5,6 +5,7 @@ public class Main {
         String fileName = "resources\\finite-state-machine-input\\input1.in";
         try {
             FiniteStateMachine finiteStateMachine = FiniteStateMachine.readFromFile(fileName);
+            finiteStateMachine.getStates();
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
