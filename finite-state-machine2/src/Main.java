@@ -9,12 +9,15 @@ public class Main {
 
             String goodSequence = "cd";
             String badSequence = "ca";
-            System.out.println(finiteStateMachine.acceptsSequence(goodSequence));
-            System.out.println(finiteStateMachine.acceptsSequence(badSequence));
-            System.out.println(finiteStateMachine.acceptsSequence("d"));
-            System.out.println(finiteStateMachine.acceptsSequence("abcd"));
-            System.out.println(finiteStateMachine.acceptsSequence("aaa"));
-            System.out.println(finiteStateMachine.acceptsSequence("cc"));
+//            System.out.println(finiteStateMachine.acceptsSequence(goodSequence));
+//            System.out.println(finiteStateMachine.acceptsSequence(badSequence));
+//            System.out.println(finiteStateMachine.acceptsSequence("d"));
+//            System.out.println(finiteStateMachine.acceptsSequence("abcd"));
+//            System.out.println(finiteStateMachine.acceptsSequence("aaa"));
+//            System.out.println(finiteStateMachine.acceptsSequence("cc"));
+
+            System.out.println(finiteStateMachine.longestPrefixAccepted("da"));
+            System.out.println(finiteStateMachine.longestPrefixAccepted("dddddddda"));
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }

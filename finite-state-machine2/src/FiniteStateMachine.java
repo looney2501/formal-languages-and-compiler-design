@@ -122,6 +122,36 @@ public class FiniteStateMachine {
         return isFinalState(node);
     }
 
+    public String longestPrefixAccepted(String symbolsSequence){
+        String lastAcceptedSequence = "";
+        StringBuilder currentSequence = new StringBuilder();
+        String node = this.initialState;
+        for(Character symbol: symbolsSequence.toCharArray()) {
+            if (isFinalState(node)) {
+                lastAcceptedSequence = currentSequence.toString();
+            }
+            List<Edge> destinations = adjList.get(node);
+            if(destinations == null) {
+                return lastAcceptedSequence;
+            }
+            boolean canContinue = false;
+            for(Edge edge: destinations) {
+                if(edge.symbol.equals(symbol)) {
+                    node = edge.destinationState;
+                    currentSequence.append(edge.symbol);
+                    canContinue = true;
+                    break;
+                }
+            }
+            if(!canContinue)
+                return lastAcceptedSequence;
+        }
+        if (isFinalState(node)) {
+            lastAcceptedSequence = currentSequence.toString();
+        }
+        return lastAcceptedSequence;
+    }
+
     private boolean isFinalState(String node) {
         return Arrays.asList(finalStates).contains(node);
     }
