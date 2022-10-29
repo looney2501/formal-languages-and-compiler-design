@@ -1,17 +1,18 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class FiniteStateMachine {
     public static FiniteStateMachine readFromFile(String filename) throws IOException {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
             String[] states = bufferedReader.readLine().split(" ");
-            String[] alphabet = bufferedReader.readLine().split(" ");
+            String[] alphabetStringArray = bufferedReader.readLine().split(" ");
+            Character[] alphabet  = new Character[alphabetStringArray.length];
+            for (int i = 0; i < alphabetStringArray.length; i++) {
+                alphabet[i] = alphabetStringArray[i].toCharArray()[0];
+            }
             String initialState = bufferedReader.readLine().split(" ")[0];
             String[] finalStates = bufferedReader.readLine().split(" ");
 
@@ -32,16 +33,16 @@ public class FiniteStateMachine {
     private static class Edge {
 
         private String destinationState;
-        private String symbol;
+        private Character symbol;
 
-        public Edge(String destinationState, String symbol) {
+        public Edge(String destinationState, Character symbol) {
             this.destinationState = destinationState;
             this.symbol = symbol;
         }
     }
 
     private String[] states;
-    private String[] alphabet;
+    private Character[] alphabet;
     private String initialState;
     private String[] finalStates;
     private Map<String, List<Edge>> adjList;
@@ -49,7 +50,7 @@ public class FiniteStateMachine {
     private boolean isDeterministic;
 
     public FiniteStateMachine(String[] states,
-                              String[] alphabet,
+                              Character[] alphabet,
                               String initialState,
                               String[] finalStates,
                               List<String[]> transitions) {
@@ -66,7 +67,7 @@ public class FiniteStateMachine {
         this.adjList = new HashMap<>();
         for (var transition : transitions) {
             String sourceState = transition[0];
-            String symbol = transition[1];
+            Character symbol = transition[1].toCharArray()[0];
             String destinationState = transition[2];
 
             Edge edge = new Edge(destinationState, symbol);
@@ -100,11 +101,36 @@ public class FiniteStateMachine {
         }
     }
 
+    public boolean acceptsSequence(String symbolsSequence){
+        String node = this.initialState;
+        for(Character symbol: symbolsSequence.toCharArray()) {
+            List<Edge> destinations = adjList.get(node);
+            if(destinations == null) {
+                return false;
+            }
+            boolean canContinue = false;
+            for(Edge edge: destinations) {
+                if(edge.symbol.equals(symbol)) {
+                    node = edge.destinationState;
+                    canContinue = true;
+                    break;
+                }
+            }
+            if(!canContinue)
+                return false;
+        }
+        return isFinalState(node);
+    }
+
+    private boolean isFinalState(String node) {
+        return Arrays.asList(finalStates).contains(node);
+    }
+
     public String[] getStates() {
         return states;
     }
 
-    public String[] getAlphabet() {
+    public Character[] getAlphabet() {
         return alphabet;
     }
 
