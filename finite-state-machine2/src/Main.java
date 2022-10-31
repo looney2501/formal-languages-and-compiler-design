@@ -28,36 +28,36 @@ public class Main {
     }
 
     private static void run() {
-        String fileName = "resources\\finite-state-machine-input\\Cpp-integers.in";
+        String fileName = "resources\\finite-state-machine-input\\inclass1.in";
         try {
             finiteStateMachine = FiniteStateMachine.readFromFile(fileName);
+            finished = false;
+            while (!finished) {
+                printMenu();
+                Scanner scanner = new Scanner(System.in);
+                String cmd = scanner.nextLine();
+                if (Objects.equals(cmd, "0")) {
+                    finished = true;
+                } else if (Objects.equals(cmd, "1")) {
+                    printStates();
+                } else if (Objects.equals(cmd, "2")) {
+                    printAlphabet();
+                } else if (Objects.equals(cmd, "3")) {
+                    printInitialState();
+                } else if (Objects.equals(cmd, "4")) {
+                    printFinalStates();
+                } else if (Objects.equals(cmd, "5")) {
+                    printTransitions();
+                } else if (Objects.equals(cmd, "6")) {
+                    checkSequence();
+                } else if (Objects.equals(cmd, "7")) {
+                    printLongestAcceptedPrefix();
+                } else {
+                    printWrongCommand();
+                }
+            }
         } catch (IOException e) {
             System.err.println(e.getMessage());
-        }
-        finished = false;
-        while (!finished) {
-            printMenu();
-            Scanner scanner = new Scanner(System.in);
-            String cmd = scanner.nextLine();
-            if (Objects.equals(cmd, "0")) {
-                finished = true;
-            } else if (Objects.equals(cmd, "1")) {
-                printStates();
-            } else if (Objects.equals(cmd, "2")) {
-                printAlphabet();
-            } else if (Objects.equals(cmd, "3")) {
-                printInitialState();
-            } else if (Objects.equals(cmd, "4")) {
-                printFinalStates();
-            } else if (Objects.equals(cmd, "5")) {
-                printTransitions();
-            } else if (Objects.equals(cmd, "6")) {
-                checkSequence();
-            } else if (Objects.equals(cmd, "7")) {
-                printLongestAcceptedPrefix();
-            } else {
-                printWrongCommand();
-            }
         }
     }
 
@@ -66,18 +66,26 @@ public class Main {
     }
 
     private static void printLongestAcceptedPrefix() {
-        System.out.println("Enter a sequence to find its longest accepted prefix:");
-        Scanner scanner = new Scanner(System.in);
-        String sequence = scanner.nextLine().strip();
-        String longestValidPrefix = finiteStateMachine.longestPrefixAccepted(sequence);
-        System.out.println(longestValidPrefix.isEmpty() ? "No valid prefix" : longestValidPrefix);
+        if (finiteStateMachine.isDeterministic()) {
+            System.out.println("Enter a sequence to find its longest accepted prefix:");
+            Scanner scanner = new Scanner(System.in);
+            String sequence = scanner.nextLine().strip();
+            FiniteStateMachine.PrefixSequence prefixSequence = finiteStateMachine.longestPrefixAccepted(sequence);
+            System.out.println(prefixSequence.isAccepted() ? prefixSequence.getSequence() : "No valid prefix");
+        } else {
+            System.out.println("Not a deterministic finite state machine!");
+        }
     }
 
     private static void checkSequence() {
-        System.out.println("Enter a sequence to validate:");
-        Scanner scanner = new Scanner(System.in);
-        String sequence = scanner.nextLine().strip();
-        System.out.println(finiteStateMachine.acceptsSequence(sequence) ? "Valid" : "Invalid");
+        if (finiteStateMachine.isDeterministic()) {
+            System.out.println("Enter a sequence to validate:");
+            Scanner scanner = new Scanner(System.in);
+            String sequence = scanner.nextLine().strip();
+            System.out.println(finiteStateMachine.acceptsSequence(sequence) ? "Valid" : "Invalid");
+        } else {
+            System.out.println("Not a deterministic finite state machine!");
+        }
     }
 
     private static void printTransitions() {

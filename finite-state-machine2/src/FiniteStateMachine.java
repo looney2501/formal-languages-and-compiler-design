@@ -32,13 +32,32 @@ public class FiniteStateMachine {
 
     private static class Edge {
 
+
         private String destinationState;
         private Character symbol;
-
         public Edge(String destinationState, Character symbol) {
             this.destinationState = destinationState;
             this.symbol = symbol;
         }
+
+    }
+    public static class PrefixSequence {
+
+        private String sequence;
+        private boolean isAccepted;
+        public PrefixSequence(String sequence, boolean isAccepted) {
+            this.sequence = sequence;
+            this.isAccepted = isAccepted;
+        }
+
+        public String getSequence() {
+            return sequence;
+        }
+
+        public boolean isAccepted() {
+            return isAccepted;
+        }
+
     }
 
     private String[] states;
@@ -48,6 +67,7 @@ public class FiniteStateMachine {
     private Map<String, List<Edge>> adjList;
     private List<String[]> transitions;
     private boolean isDeterministic;
+    private boolean isEpsilonAccepted;
 
     public FiniteStateMachine(String[] states,
                               Character[] alphabet,
@@ -60,6 +80,7 @@ public class FiniteStateMachine {
         this.finalStates = finalStates;
         this.transitions = transitions;
         this.isDeterministic = true;
+        this.isEpsilonAccepted = false;
         this.buildGraph();
     }
 
@@ -85,6 +106,7 @@ public class FiniteStateMachine {
                 checkNedeterministic(destinations);
             }
         }
+        this.isEpsilonAccepted = Arrays.asList(finalStates).contains(initialState);
     }
 
     private void checkNedeterministic(List<Edge> destinations) {
@@ -122,8 +144,9 @@ public class FiniteStateMachine {
         return isFinalState(node);
     }
 
-    public String longestPrefixAccepted(String symbolsSequence){
+    public PrefixSequence longestPrefixAccepted(String symbolsSequence){
         String lastAcceptedSequence = "";
+        boolean isAccepted;
         StringBuilder currentSequence = new StringBuilder();
         String node = this.initialState;
         for(Character symbol: symbolsSequence.toCharArray()) {
@@ -132,7 +155,12 @@ public class FiniteStateMachine {
             }
             List<Edge> destinations = adjList.get(node);
             if(destinations == null) {
-                return lastAcceptedSequence;
+                if (lastAcceptedSequence.equals("")) {
+                    isAccepted = isEpsilonAccepted;
+                } else {
+                    isAccepted = true;
+                }
+                return new PrefixSequence(lastAcceptedSequence, isAccepted);
             }
             boolean canContinue = false;
             for(Edge edge: destinations) {
@@ -143,13 +171,24 @@ public class FiniteStateMachine {
                     break;
                 }
             }
-            if(!canContinue)
-                return lastAcceptedSequence;
+            if(!canContinue) {
+                if (lastAcceptedSequence.equals("")) {
+                    isAccepted = isEpsilonAccepted;
+                } else {
+                    isAccepted = true;
+                }
+                return new PrefixSequence(lastAcceptedSequence, isAccepted);
+            }
         }
         if (isFinalState(node)) {
             lastAcceptedSequence = currentSequence.toString();
         }
-        return lastAcceptedSequence;
+        if (lastAcceptedSequence.equals("")) {
+            isAccepted = isEpsilonAccepted;
+        } else {
+            isAccepted = true;
+        }
+        return new PrefixSequence(lastAcceptedSequence, isAccepted);
     }
 
     private boolean isFinalState(String node) {
@@ -174,5 +213,9 @@ public class FiniteStateMachine {
 
     public List<String[]> getTransitions() {
         return transitions;
+    }
+
+    public boolean isDeterministic() {
+        return this.isDeterministic;
     }
 }
