@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class FiniteStateMachine {
-    public static FiniteStateMachine readFromFile(String filename) throws IOException {
+    public static FiniteStateMachine readFromFile(String filename) {
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filename))) {
             String[] states = bufferedReader.readLine().split(" ");
             String[] alphabetStringArray = bufferedReader.readLine().split(" ");
@@ -27,6 +27,8 @@ public class FiniteStateMachine {
             }
 
             return new FiniteStateMachine(states, alphabet, initialState, finalStates, transitions);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

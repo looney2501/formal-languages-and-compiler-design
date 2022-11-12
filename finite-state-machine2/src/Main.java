@@ -28,8 +28,7 @@ public class Main {
     }
 
     private static void run() {
-        String fileName = "resources\\finite-state-machine-input\\inclass1.in";
-        try {
+        String fileName = "resources\\finite-state-machine-input\\keywords-spec.in";
             finiteStateMachine = FiniteStateMachine.readFromFile(fileName);
             finished = false;
             while (!finished) {
@@ -56,9 +55,6 @@ public class Main {
                     printWrongCommand();
                 }
             }
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
     }
 
     private static void printWrongCommand() {

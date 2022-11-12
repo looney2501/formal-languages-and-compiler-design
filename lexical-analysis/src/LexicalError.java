@@ -1,13 +1,12 @@
 public class LexicalError extends Exception {
-    private int line, column;
+    private int line;
 
-    public LexicalError(int line, int column) {
+    public LexicalError(int line) {
         this.line = line;
-        this.column = column;
     }
 
     @Override
     public String getMessage() {
-        return "Lexical error at " + line + ":" + column + ".";
+        return "Lexical error at line " + line + ".";
     }
 }
