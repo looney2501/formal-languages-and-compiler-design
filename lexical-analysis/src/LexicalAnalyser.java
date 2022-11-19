@@ -155,12 +155,43 @@ public class LexicalAnalyser {
     private static void createAtomsTable() {
         atomsTable.put("ID", 0);
         atomsTable.put("CONST", 1);
-        tokens.forEach(entry -> {
-            if (!entry.getValue().equals("ID") && !entry.getValue().equals("INTEGER") && !entry.getValue().equals("DOUBLE")
-                    && !atomsTable.containsKey(entry.getKey())) {
-                atomsTable.put(entry.getKey(), atomsTable.size());
-            }
-        });
+        atomsTable.put("#include", 2);
+        atomsTable.put("iostream", 3);
+        atomsTable.put("using", 4);
+        atomsTable.put("namespace", 5);
+        atomsTable.put("std", 6);
+        atomsTable.put("main", 7);
+        atomsTable.put("return", 8);
+        atomsTable.put("typedef", 9);
+        atomsTable.put("struct", 10);
+        atomsTable.put("int", 11);
+        atomsTable.put("double", 12);
+        atomsTable.put("if", 13);
+        atomsTable.put("while", 14);
+        atomsTable.put("cin", 15);
+        atomsTable.put("cout", 16);
+        atomsTable.put("endl", 17);
+        atomsTable.put(";", 18);
+        atomsTable.put("<", 19);
+        atomsTable.put(">", 20);
+        atomsTable.put("!", 21);
+        atomsTable.put("+", 22);
+        atomsTable.put("-", 23);
+        atomsTable.put("*", 24);
+        atomsTable.put("/", 25);
+        atomsTable.put("%", 26);
+        atomsTable.put("=", 27);
+        atomsTable.put("(", 28);
+        atomsTable.put(")", 29);
+        atomsTable.put("{", 30);
+        atomsTable.put("}", 31);
+        atomsTable.put(".", 32);
+        atomsTable.put("<<", 33);
+        atomsTable.put(">>", 34);
+        atomsTable.put("<=", 35);
+        atomsTable.put(">=", 36);
+        atomsTable.put("==", 37);
+        atomsTable.put("!=", 38);
     }
 
     private static void createFIPTable() {
