@@ -94,7 +94,7 @@ identifier      (([_a-zA-Z])([_a-zA-Z0-9]){0,7})
 number_dec      (([+\-]?([1-9]?[0-9]*[lL]?)(\.[0-9]+)?)[fF]?)
 number_hex      ((0[xX][0-9a-fA-F]+)[lL]?)
 number_oct      ([+-]?(0[1-7]*[lL]?))
-number_bin      (\b0[bB][01]+\b)
+number_bin      (0[bB][01]+)
 constant        {number_dec}|{number_hex}|{number_bin}|{number_oct}
 white_space     [ \t\r\n]+
 
