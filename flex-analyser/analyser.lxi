@@ -1,0 +1,147 @@
+%{
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+
+char atoms_table[39][20] = {
+        "ID",
+        "CONST",
+        "#include",
+        "iostream",
+        "using",
+        "namespace",
+        "std",
+        "main",
+        "return",
+        "typedef",
+        "struct",
+        "int",
+        "double",
+        "if",
+        "while",
+        "cin",
+        "cout",
+        "endl",
+        ";",
+        "<",
+        ">",
+        "!",
+        "+",
+        "-",
+        "*",
+        "/",
+        "%",
+        "=",
+        "(",
+        ")",
+        "{",
+        "}",
+        ".",
+        "<<",
+        ">>",
+        "<=",
+        ">=",
+        "==",
+        "!="
+};
+
+char idTable[100][9];
+int idTableLen = 0;
+char constTable[100][50];
+int constTableLen = 0;
+
+int getAtomCode(char* atom) {
+    for (int i = 2; i < 39; i++) {
+        if (strcmp(atoms_table[i], atom) == 0) return i;
+    }
+    return -1;
+}
+
+int addOrGetExistingIdCode(char* atom) {
+    for (int i = 0; i < idTableLen; i++) {
+        if (strcmp(atom, idTable[i]) == 0) {
+            return i;
+        }
+    }
+    strcpy(idTable[idTableLen], atom);
+    idTableLen++;
+    return idTableLen - 1;
+}
+
+int addOrGetExistingConstCode(char* atom) {
+    for (int i = 0; i < constTableLen; i++) {
+        if (strcmp(atom, constTable[i]) == 0) {
+            return i;
+        }
+    }
+    strcpy(constTable[constTableLen], atom);
+    constTableLen++;
+    return constTableLen - 1;
+}
+
+int isError = 0;
+
+FILE *fptrFip;
+
+%}
+
+%option noyywrap
+%option yylineno
+
+delimiter       ([;<>!+\-*/%=(){}\.]|<<|>>|<=|>=|==|!=)
+keyword         (#include|iostream|using|namespace|std|main|return|typedef|struct|int|double|if|while|cin|cout|endl)
+identifier      (([_a-zA-Z])([_a-zA-Z0-9]){0,7})
+number_dec      (([+\-]?([1-9]?[0-9]*[lL]?)(\.[0-9]+)?)[fF]?)
+number_hex      ((0[xX][0-9a-fA-F]+)[lL]?)
+number_oct      ([+-]?(0[1-7]*[lL]?))
+number_bin      (\b0[bB][01]+\b)
+constant        {number_dec}|{number_hex}|{number_bin}|{number_oct}
+white_space     [ \t\r\n]+
+
+%%
+
+{white_space}
+{delimiter}|{keyword}       {fprintf(fptrFip, "%s,%d,NULL\n", yytext, getAtomCode(yytext));}
+{identifier}                {
+                                int codts = addOrGetExistingIdCode(yytext);
+                                fprintf(fptrFip, "%s,0,%d\n", yytext, codts);
+                            }
+{constant}                  {
+                                int codts = addOrGetExistingConstCode(yytext);
+                                fprintf(fptrFip, "%s,1,%d\n", yytext, codts);
+                            }
+.                           {
+                                isError = 1;
+                                fclose(fptrFip);
+                                remove("resources\\fip-table.csv");
+                                printf("Lexical error on line: %d\n", yylineno);
+                            }
+
+%%
+
+int main(int argc, char **argv) {
+    fptrFip = fopen("resources\\fip-table.csv", "w");
+    fprintf(fptrFip, "ATOM,CODATOM,CODTS\n");
+    yylex();
+
+    if (!isError) {
+        fclose(fptrFip);
+        FILE *fptrIdTable;
+        fptrIdTable = fopen("resources\\identifiers-table.csv", "w");
+        fprintf(fptrIdTable, "ID,CODTS\n");
+        for(int i = 0 ; i < idTableLen; i++){
+            fprintf(fptrIdTable, "%s,%d\n", idTable[i], i);
+        }
+        fclose(fptrIdTable);
+
+        FILE *fptrConstTable;
+        fptrConstTable = fopen("resources\\constants-table.csv", "w");
+        fprintf(fptrConstTable, "CONST,CODTS\n");
+        for(int i = 0 ; i < constTableLen; i++){
+            fprintf(fptrIdTable, "%s,%d\n", constTable[i], i);
+        }
+        fclose(fptrConstTable);
+    }
+
+    return 0;
+}
