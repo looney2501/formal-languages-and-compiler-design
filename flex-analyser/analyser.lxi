@@ -2,86 +2,10 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
-
-char atoms_table[39][20] = {
-        "ID",
-        "CONST",
-        "#include",
-        "iostream",
-        "using",
-        "namespace",
-        "std",
-        "main",
-        "return",
-        "typedef",
-        "struct",
-        "int",
-        "double",
-        "if",
-        "while",
-        "cin",
-        "cout",
-        "endl",
-        ";",
-        "<",
-        ">",
-        "!",
-        "+",
-        "-",
-        "*",
-        "/",
-        "%",
-        "=",
-        "(",
-        ")",
-        "{",
-        "}",
-        ".",
-        "<<",
-        ">>",
-        "<=",
-        ">=",
-        "==",
-        "!="
-};
-
-char idTable[100][9];
-int idTableLen = 0;
-char constTable[100][50];
-int constTableLen = 0;
-
-int getAtomCode(char* atom) {
-    for (int i = 2; i < 39; i++) {
-        if (strcmp(atoms_table[i], atom) == 0) return i;
-    }
-    return -1;
-}
-
-int addOrGetExistingIdCode(char* atom) {
-    for (int i = 0; i < idTableLen; i++) {
-        if (strcmp(atom, idTable[i]) == 0) {
-            return i;
-        }
-    }
-    strcpy(idTable[idTableLen], atom);
-    idTableLen++;
-    return idTableLen - 1;
-}
-
-int addOrGetExistingConstCode(char* atom) {
-    for (int i = 0; i < constTableLen; i++) {
-        if (strcmp(atom, constTable[i]) == 0) {
-            return i;
-        }
-    }
-    strcpy(constTable[constTableLen], atom);
-    constTableLen++;
-    return constTableLen - 1;
-}
+#include "atoms-table.c"
+#include "fip-table.c"
 
 int isError = 0;
-
-FILE *fptrFip;
 
 %}
 
@@ -101,46 +25,52 @@ white_space     [ \t\r\n]+
 %%
 
 {white_space}
-{delimiter}|{keyword}       {fprintf(fptrFip, "%s,%d,NULL\n", yytext, getAtomCode(yytext));}
+{delimiter}|{keyword}       {
+                                fipTableAdd(yytext);
+                            }
 {identifier}                {
-                                int codts = addOrGetExistingIdCode(yytext);
-                                fprintf(fptrFip, "%s,0,%d\n", yytext, codts);
+                                idTableAdd(yytext);
+                                fipTableAddId(yytext);
                             }
 {constant}                  {
-                                int codts = addOrGetExistingConstCode(yytext);
-                                fprintf(fptrFip, "%s,1,%d\n", yytext, codts);
+                                constTableAdd(yytext);
+                                fipTableAddConst(yytext);
                             }
 .                           {
                                 isError = 1;
-                                fclose(fptrFip);
-                                remove("resources\\fip-table.csv");
                                 printf("Lexical error on line: %d\n", yylineno);
                             }
 
 %%
 
 int main(int argc, char **argv) {
-    fptrFip = fopen("resources\\fip-table.csv", "w");
-    fprintf(fptrFip, "ATOM,CODATOM,CODTS\n");
     yylex();
 
     if (!isError) {
-        fclose(fptrFip);
+        idTableUpdateOrder();
         FILE *fptrIdTable;
         fptrIdTable = fopen("resources\\identifiers-table.csv", "w");
-        fprintf(fptrIdTable, "ID,CODTS\n");
-        for(int i = 0 ; i < idTableLen; i++){
-            fprintf(fptrIdTable, "%s,%d\n", idTable[i], i);
-        }
+        idTableFilePrint(fptrIdTable);
         fclose(fptrIdTable);
 
+        constTableUpdateOrder();
         FILE *fptrConstTable;
         fptrConstTable = fopen("resources\\constants-table.csv", "w");
-        fprintf(fptrConstTable, "CONST,CODTS\n");
-        for(int i = 0 ; i < constTableLen; i++){
-            fprintf(fptrIdTable, "%s,%d\n", constTable[i], i);
-        }
+        constTableFilePrint(fptrConstTable);
         fclose(fptrConstTable);
+
+        updateSymbolCodes();
+        FILE *fptrFip;
+        fptrFip = fopen("resources\\fip-table.csv", "w");
+        fprintf(fptrFip, "ATOM,CODATOM,CODTS\n");
+        for (int i = 0; i < fipTableLen; i++) {
+            if (fipTable[i].symbolCode == -1) {
+                fprintf(fptrFip, "%s,%d,null\n", fipTable[i].atom, fipTable[i].atomCode);
+            } else {
+                fprintf(fptrFip, "%s,%d,%d\n", fipTable[i].atom, fipTable[i].atomCode, fipTable[i].symbolCode);
+            }
+        }
+        fclose(fptrFip);
     }
 
     return 0;
