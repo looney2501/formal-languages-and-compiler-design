@@ -1,6 +1,6 @@
 #include <string.h>
 
-char atomsTable[39][20] = {
+char atomsTable[42][20] = {
         "ID",
         "CONST",
         "#include",
@@ -19,6 +19,9 @@ char atomsTable[39][20] = {
         "cin",
         "cout",
         "endl",
+        "throw",
+        "catch",
+        "try",
         ";",
         "<",
         ">",
@@ -43,7 +46,7 @@ char atomsTable[39][20] = {
 };
 
 int getAtomCode(char* atom) {
-    for (int i = 2; i < 39; i++) {
+    for (int i = 2; i < 42; i++) {
         if (strcmp(atomsTable[i], atom) == 0) return i;
     }
     return -1;

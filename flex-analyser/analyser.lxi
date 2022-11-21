@@ -13,7 +13,7 @@ int isError = 0;
 %option yylineno
 
 delimiter       ([;<>!+\-*/%=(){}\.]|<<|>>|<=|>=|==|!=)
-keyword         (#include|iostream|using|namespace|std|main|return|typedef|struct|int|double|if|while|cin|cout|endl)
+keyword         (#include|iostream|using|namespace|std|main|return|typedef|struct|int|double|if|while|cin|cout|endl|try|catch|throw)
 identifier      (([_a-zA-Z])([_a-zA-Z0-9]){0,7})
 number_dec      (([+\-]?([1-9]?[0-9]*[lL]?)(\.[0-9]+)?)[fF]?)
 number_hex      ((0[xX][0-9a-fA-F]+)[lL]?)
