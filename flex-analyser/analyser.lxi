@@ -49,19 +49,19 @@ int main(int argc, char **argv) {
     if (!isError) {
         idTableUpdateOrder();
         FILE *fptrIdTable;
-        fptrIdTable = fopen("resources\\identifiers-table.csv", "w");
+        fptrIdTable = fopen("D:\\proiecte\\LFTC\\resources\\flex-analyser-output\\identifiers-table.csv", "w");
         idTableFilePrint(fptrIdTable);
         fclose(fptrIdTable);
 
         constTableUpdateOrder();
         FILE *fptrConstTable;
-        fptrConstTable = fopen("resources\\constants-table.csv", "w");
+        fptrConstTable = fopen("D:\\proiecte\\LFTC\\resources\\flex-analyser-output\\constants-table.csv", "w");
         constTableFilePrint(fptrConstTable);
         fclose(fptrConstTable);
 
         updateSymbolCodes();
         FILE *fptrFip;
-        fptrFip = fopen("resources\\fip-table.csv", "w");
+        fptrFip = fopen("D:\\proiecte\\LFTC\\resources\\flex-analyser-output\\fip-table.csv", "w");
         fprintf(fptrFip, "ATOM,CODATOM,CODTS\n");
         for (int i = 0; i < fipTableLen; i++) {
             if (fipTable[i].symbolCode == -1) {
