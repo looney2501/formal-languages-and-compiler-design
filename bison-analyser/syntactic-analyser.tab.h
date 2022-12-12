@@ -64,12 +64,14 @@
      TYPEDEF = 280,
      STRUCT = 281,
      ASSIGN_OP = 282,
-     ARITH_OP = 283,
-     LOGICAL_OP = 284,
-     LEFT_SHIFT = 285,
-     RIGHT_SHIFT = 286,
-     ID = 287,
-     CONST = 288
+     TERNARY_SELECTION = 283,
+     TERNARY_ELSE = 284,
+     ARITH_OP = 285,
+     LOGICAL_OP = 286,
+     LEFT_SHIFT = 287,
+     RIGHT_SHIFT = 288,
+     ID = 289,
+     CONST = 290
    };
 #endif
 

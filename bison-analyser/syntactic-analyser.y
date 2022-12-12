@@ -12,6 +12,8 @@
 %token DATA_TYPE
 %token TYPEDEF STRUCT
 %token ASSIGN_OP
+%left TERNARY_SELECTION
+%left TERNARY_ELSE
 %left ARITH_OP
 %left LOGICAL_OP
 %token LEFT_SHIFT RIGHT_SHIFT
@@ -59,7 +61,11 @@ assignment:     ID ASSIGN_OP expr INSTR_DELIM
 
 expr:           ID |
                 CONST |
+                ternary |
                 expr ARITH_OP expr
+
+ternary:        expr LOGICAL_OP expr TERNARY_SELECTION
+                expr TERNARY_ELSE expr
 
 selection:      IF OPEN_COND condition CLOSE_COND OPEN_BLOCK
                 instr_list CLOSE_BLOCK
