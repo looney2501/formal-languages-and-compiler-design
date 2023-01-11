@@ -1,5 +1,7 @@
 %{
 #include <stdio.h>
+#include <string.h>
+#include "attrib.h"
 #include "syntactic-analyser.tab.h"
 %}
 
@@ -92,18 +94,20 @@ cout                        {
                                 return INT_TYPE;
                             }
 {identifier}                {
+                                strcpy(yylval.varname, yytext);
                                 return ID;
                             }
 {constant}                  {
+                                strcpy(yylval.varname, yytext);
                                 return CONST;
                             }
 .                           {
                                 yyerror("lexical error");
-                                exit(-1);
                             }
 %%
 
 void yyerror(char *s)
 {
     fprintf(stderr, "error: %s:%d\n", s, yylineno);
+    exit(-1);
 }

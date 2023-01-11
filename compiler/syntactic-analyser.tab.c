@@ -70,12 +70,26 @@
 /* Line 189 of yacc.c  */
 #line 1 ".\\syntactic-analyser.y"
 
+
 #include <stdio.h>
-int finishedDataSegment = 0;
+#include <string.h>
+#include "attrib.h"
+#include "codeASM.h"
+
+char data_segment_buffer[10000];
+char code_segment_buffer[10000];
+char temp[1000];
+
+int tempnr = 1;
+void newTempName(char* s){
+  sprintf(s, "temp%d", tempnr);
+  tempnr++;
+}
+
 
 
 /* Line 189 of yacc.c  */
-#line 79 "syntactic-analyser.tab.c"
+#line 93 "syntactic-analyser.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -132,7 +146,20 @@ int finishedDataSegment = 0;
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 214 of yacc.c  */
+#line 21 ".\\syntactic-analyser.y"
+
+    char varname[10];
+    attributes pairAttrib;
+
+
+
+/* Line 214 of yacc.c  */
+#line 162 "syntactic-analyser.tab.c"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -143,7 +170,7 @@ typedef int YYSTYPE;
 
 
 /* Line 264 of yacc.c  */
-#line 147 "syntactic-analyser.tab.c"
+#line 174 "syntactic-analyser.tab.c"
 
 #ifdef short
 # undef short
@@ -363,11 +390,11 @@ union yyalloc
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  27
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  9
+#define YYNNTS  10
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  18
+#define YYNRULES  19
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  50
+#define YYNSTATES  51
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
@@ -416,7 +443,7 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,    20,    22,    25,    27,    29,    31,    33,
-      37,    42,    44,    46,    50,    54,    58,    62,    67
+      37,    42,    44,    48,    52,    56,    60,    62,    64,    69
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
@@ -424,19 +451,19 @@ static const yytype_int8 yyrhs[] =
 {
       28,     0,    -1,     8,     9,    10,    11,    12,     7,    17,
       13,     5,     6,     3,    29,    14,    26,     7,     4,    -1,
-      30,    -1,    30,    29,    -1,    31,    -1,    32,    -1,    34,
-      -1,    35,    -1,    17,    25,     7,    -1,    25,    18,    33,
-       7,    -1,    25,    -1,    26,    -1,    33,    22,    33,    -1,
-      33,    21,    33,    -1,    33,    24,    33,    -1,    33,    23,
-      33,    -1,    15,    20,    25,     7,    -1,    16,    19,    25,
-       7,    -1
+      30,    -1,    30,    29,    -1,    31,    -1,    32,    -1,    35,
+      -1,    36,    -1,    17,    25,     7,    -1,    25,    18,    33,
+       7,    -1,    34,    -1,    33,    22,    33,    -1,    33,    21,
+      33,    -1,    33,    24,    33,    -1,    33,    23,    33,    -1,
+      26,    -1,    25,    -1,    15,    20,    25,     7,    -1,    16,
+      19,    25,     7,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    21,    21,    27,    28,    30,    31,    32,    33,    35,
-      37,    39,    40,    41,    42,    43,    44,    46,    48
+       0,    43,    43,    49,    50,    52,    53,    54,    55,    57,
+      62,    69,    73,    83,    93,   103,   114,   118,   123,   130
 };
 #endif
 
@@ -450,7 +477,7 @@ static const char *const yytname[] =
   "STD", "MAIN", "RETURN", "CIN", "COUT", "INT_TYPE", "ASSIGN_OP",
   "LEFT_SHIFT", "RIGHT_SHIFT", "SUB", "ADD", "DIV", "MUL", "ID", "CONST",
   "$accept", "program", "instr_list", "instr", "declaration", "assignment",
-  "expr", "read", "write", 0
+  "expr", "term", "read", "write", 0
 };
 #endif
 
@@ -469,14 +496,14 @@ static const yytype_uint16 yytoknum[] =
 static const yytype_uint8 yyr1[] =
 {
        0,    27,    28,    29,    29,    30,    30,    30,    30,    31,
-      32,    33,    33,    33,    33,    33,    33,    34,    35
+      32,    33,    33,    33,    33,    33,    34,    34,    35,    36
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,    16,     1,     2,     1,     1,     1,     1,     3,
-       4,     1,     1,     3,     3,     3,     3,     4,     4
+       4,     1,     3,     3,     3,     3,     1,     1,     4,     4
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -487,32 +514,34 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     1,     0,     0,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     3,
        5,     6,     7,     8,     0,     0,     0,     0,     0,     4,
-       0,     0,     9,    11,    12,     0,     0,    17,    18,    10,
-       0,     0,     0,     0,     0,    14,    13,    16,    15,     2
+       0,     0,     9,    17,    16,     0,    11,     0,    18,    19,
+      10,     0,     0,     0,     0,     0,    13,    12,    15,    14,
+       2
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,    18,    19,    20,    21,    35,    22,    23
+      -1,     2,    18,    19,    20,    21,    35,    36,    22,    23
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -37
+#define YYPACT_NINF -38
 static const yytype_int8 yypact[] =
 {
-       2,     9,    19,    10,   -37,    11,    12,    14,     6,    13,
+       2,     9,    19,    10,   -38,    11,    12,    14,     6,    13,
       20,    21,    25,   -14,    15,    17,     4,    16,    18,   -14,
-     -37,   -37,   -37,   -37,     5,     8,    24,   -17,    22,   -37,
-      30,    31,   -37,   -37,   -37,    -7,    32,   -37,   -37,   -37,
-     -17,   -17,   -17,   -17,    36,   -11,   -11,   -37,   -37,   -37
+     -38,   -38,   -38,   -38,     5,     8,    24,   -17,    22,   -38,
+      30,    31,   -38,   -38,   -38,    -7,   -38,    32,   -38,   -38,
+     -38,   -17,   -17,   -17,   -17,    36,   -11,   -11,   -38,   -38,
+     -38
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -37,   -37,    23,   -37,   -37,   -37,   -36,   -37,   -37
+     -38,   -38,    23,   -38,   -38,   -38,   -37,   -38,   -38,   -38
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -522,16 +551,16 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-      39,    14,    15,    16,    45,    46,    47,    48,    33,    34,
-       1,    17,    42,    43,    40,    41,    42,    43,     3,     4,
+      40,    14,    15,    16,    46,    47,    48,    49,    33,    34,
+       1,    17,    43,    44,    41,    42,    43,    44,     3,     4,
        5,     8,     6,     9,     7,    11,    10,    12,    13,    26,
-      30,    32,    28,    31,    27,    24,    25,    37,    38,    44,
-      49,     0,    29,     0,     0,     0,     0,     0,    36
+      30,    32,    28,    31,    27,    24,    25,    38,    39,    45,
+      50,     0,    29,     0,     0,     0,     0,     0,    37
 };
 
 static const yytype_int8 yycheck[] =
 {
-       7,    15,    16,    17,    40,    41,    42,    43,    25,    26,
+       7,    15,    16,    17,    41,    42,    43,    44,    25,    26,
        8,    25,    23,    24,    21,    22,    23,    24,     9,     0,
       10,     7,    11,    17,    12,     5,    13,     6,     3,    25,
       25,     7,    14,    25,    18,    20,    19,     7,     7,     7,
@@ -544,9 +573,10 @@ static const yytype_uint8 yystos[] =
 {
        0,     8,    28,     9,     0,    10,    11,    12,     7,    17,
       13,     5,     6,     3,    15,    16,    17,    25,    29,    30,
-      31,    32,    34,    35,    20,    19,    25,    18,    14,    29,
-      25,    25,     7,    25,    26,    33,    26,     7,     7,     7,
-      21,    22,    23,    24,     7,    33,    33,    33,    33,     4
+      31,    32,    35,    36,    20,    19,    25,    18,    14,    29,
+      25,    25,     7,    25,    26,    33,    34,    26,     7,     7,
+       7,    21,    22,    23,    24,     7,    33,    33,    33,    33,
+       4
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1360,42 +1390,154 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 25 ".\\syntactic-analyser.y"
+#line 47 ".\\syntactic-analyser.y"
     { printf("GOOD FILE FORMAT\n"); ;}
+    break;
+
+  case 9:
+
+/* Line 1455 of yacc.c  */
+#line 57 ".\\syntactic-analyser.y"
+    {
+                                            sprintf(temp, DECLARE_INT_ASM_FORMAT, (yyvsp[(2) - (3)].varname));
+                                            strcat(data_segment_buffer, temp);
+                                        ;}
+    break;
+
+  case 10:
+
+/* Line 1455 of yacc.c  */
+#line 62 ".\\syntactic-analyser.y"
+    {
+                                                char temp2[100];
+                                                sprintf(temp2, "[%s]", (yyvsp[(1) - (4)].varname));
+                                                sprintf(temp, ASSIGN_ASM_FORMAT, (yyvsp[(3) - (4)].pairAttrib).varn, temp2);
+                                                strcat(code_segment_buffer, temp);
+                                              ;}
+    break;
+
+  case 11:
+
+/* Line 1455 of yacc.c  */
+#line 69 ".\\syntactic-analyser.y"
+    {
+                        strcpy((yyval.pairAttrib).code, (yyvsp[(1) - (1)].pairAttrib).code);
+                        strcpy((yyval.pairAttrib).varn, (yyvsp[(1) - (1)].pairAttrib).varn);
+                     ;}
+    break;
+
+  case 12:
+
+/* Line 1455 of yacc.c  */
+#line 73 ".\\syntactic-analyser.y"
+    {
+                                    newTempName((yyval.pairAttrib).varn);
+                                    sprintf(temp, DECLARE_INT_ASM_FORMAT, (yyval.pairAttrib).varn);
+                                    strcat(data_segment_buffer, temp);
+                                    sprintf(temp, "[%s]", (yyval.pairAttrib).varn);
+                                    strcpy((yyval.pairAttrib).varn, temp);
+                                    sprintf((yyval.pairAttrib).code, "%s\n%s\n", (yyvsp[(1) - (3)].pairAttrib).code, (yyvsp[(3) - (3)].pairAttrib).code);
+                                    sprintf(temp, ADD_ASM_FORMAT, (yyvsp[(1) - (3)].pairAttrib).varn, (yyvsp[(3) - (3)].pairAttrib).varn, (yyval.pairAttrib).varn);
+                                    strcat(code_segment_buffer, temp);
+                                ;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 41 ".\\syntactic-analyser.y"
-    { printf("adunare"); ;}
+#line 83 ".\\syntactic-analyser.y"
+    {
+                                    newTempName((yyval.pairAttrib).varn);
+                                    sprintf(temp, DECLARE_INT_ASM_FORMAT, (yyval.pairAttrib).varn);
+                                    strcat(data_segment_buffer, temp);
+                                    sprintf(temp, "[%s]", (yyval.pairAttrib).varn);
+                                    strcpy((yyval.pairAttrib).varn, temp);
+                                    sprintf((yyval.pairAttrib).code, "%s\n%s\n", (yyvsp[(1) - (3)].pairAttrib).code, (yyvsp[(3) - (3)].pairAttrib).code);
+                                    sprintf(temp, SUB_ASM_FORMAT, (yyvsp[(1) - (3)].pairAttrib).varn, (yyvsp[(3) - (3)].pairAttrib).varn, (yyval.pairAttrib).varn);
+                                    strcat(code_segment_buffer, temp);
+                                ;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 42 ".\\syntactic-analyser.y"
-    { printf("scadere"); ;}
+#line 93 ".\\syntactic-analyser.y"
+    {
+                                    newTempName((yyval.pairAttrib).varn);
+                                    sprintf(temp, DECLARE_INT_ASM_FORMAT, (yyval.pairAttrib).varn);
+                                    strcat(data_segment_buffer, temp);
+                                    sprintf(temp, "[%s]", (yyval.pairAttrib).varn);
+                                    strcpy((yyval.pairAttrib).varn, temp);
+                                    sprintf((yyval.pairAttrib).code, "%s\n%s\n", (yyvsp[(1) - (3)].pairAttrib).code, (yyvsp[(3) - (3)].pairAttrib).code);
+                                    sprintf(temp, MUL_ASM_FORMAT, (yyvsp[(1) - (3)].pairAttrib).varn, (yyvsp[(3) - (3)].pairAttrib).varn, (yyval.pairAttrib).varn);
+                                    strcat(code_segment_buffer, temp);
+                                ;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 43 ".\\syntactic-analyser.y"
-    { printf("inmultire"); ;}
+#line 103 ".\\syntactic-analyser.y"
+    {
+                                    newTempName((yyval.pairAttrib).varn);
+                                    sprintf(temp, DECLARE_INT_ASM_FORMAT, (yyval.pairAttrib).varn);
+                                    strcat(data_segment_buffer, temp);
+                                    sprintf(temp, "[%s]", (yyval.pairAttrib).varn);
+                                    strcpy((yyval.pairAttrib).varn, temp);
+                                    sprintf((yyval.pairAttrib).code, "%s\n%s\n", (yyvsp[(1) - (3)].pairAttrib).code, (yyvsp[(3) - (3)].pairAttrib).code);
+                                    sprintf(temp, DIV_ASM_FORMAT, (yyvsp[(1) - (3)].pairAttrib).varn, (yyvsp[(3) - (3)].pairAttrib).varn, (yyval.pairAttrib).varn);
+                                    strcat(code_segment_buffer, temp);
+                                ;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 44 ".\\syntactic-analyser.y"
-    { printf("impartire"); ;}
+#line 114 ".\\syntactic-analyser.y"
+    {
+                        strcpy((yyval.pairAttrib).code, "");
+                        strcpy((yyval.pairAttrib).varn, (yyvsp[(1) - (1)].varname));
+                      ;}
+    break;
+
+  case 17:
+
+/* Line 1455 of yacc.c  */
+#line 118 ".\\syntactic-analyser.y"
+    {
+                        strcpy((yyval.pairAttrib).code, "");
+                        sprintf((yyval.pairAttrib).varn, "[%s]", (yyvsp[(1) - (1)].varname));
+                     ;}
+    break;
+
+  case 18:
+
+/* Line 1455 of yacc.c  */
+#line 123 ".\\syntactic-analyser.y"
+    {
+                                                   sprintf(temp, "[%s]", (yyvsp[(3) - (4)].varname));
+                                                   strcpy((yyvsp[(3) - (4)].varname), temp);
+                                                   sprintf(temp, READ_ASM_FORMAT, (yyvsp[(3) - (4)].varname));
+                                                   strcat(code_segment_buffer, temp);
+                                               ;}
+    break;
+
+  case 19:
+
+/* Line 1455 of yacc.c  */
+#line 130 ".\\syntactic-analyser.y"
+    {
+                                                    sprintf(temp, "[%s]", (yyvsp[(3) - (4)].varname));
+                                                    strcpy((yyvsp[(3) - (4)].varname), temp);
+                                                    sprintf(temp, PRINT_ASM_FORMAT, (yyvsp[(3) - (4)].varname));
+                                                    strcat(code_segment_buffer, temp);
+                                               ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1399 "syntactic-analyser.tab.c"
+#line 1541 "syntactic-analyser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1607,18 +1749,23 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 50 ".\\syntactic-analyser.y"
+#line 137 ".\\syntactic-analyser.y"
 
 
-void print_initial_code()
+void print_asm_code()
 {
-    printf("bits 32\nglobal start\nextern exit\nimport exit msvcrt.dll\nsegment data use32 class=data\n");
+    FILE *fptr;
+    fptr = fopen("D:\\proiecte\\LFTC\\resources\\compiler-output\\program.asm", "w");
+    fprintf(fptr, PROGRAM_HEADER_ASM_FORMAT);
+    fprintf(fptr, DATA_SEGMENT, data_segment_buffer);
+    fprintf(fptr, CODE_SEGMENT, code_segment_buffer);
+    fclose(fptr);
 }
 
 int main(int argc, char **argv)
 {
-    print_initial_code();
     yyparse();
+    print_asm_code();
     return 0;
 }
 

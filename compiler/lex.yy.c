@@ -458,8 +458,10 @@ char *yytext;
 #define INITIAL 0
 #line 2 ".\\lexical-analyser.l"
 #include <stdio.h>
+#include <string.h>
+#include "attrib.h"
 #include "syntactic-analyser.tab.h"
-#line 463 "lex.yy.c"
+#line 465 "lex.yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -610,9 +612,9 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
 
-#line 26 ".\\lexical-analyser.l"
+#line 28 ".\\lexical-analyser.l"
 
-#line 616 "lex.yy.c"
+#line 618 "lex.yy.c"
 
 	if ( yy_init )
 		{
@@ -705,191 +707,192 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 27 ".\\lexical-analyser.l"
+#line 29 ".\\lexical-analyser.l"
 
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 28 ".\\lexical-analyser.l"
+#line 30 ".\\lexical-analyser.l"
 {
                                 return INCLUDE;
                             }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 31 ".\\lexical-analyser.l"
+#line 33 ".\\lexical-analyser.l"
 {
                                 return IOSTREAM;
                             }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 34 ".\\lexical-analyser.l"
+#line 36 ".\\lexical-analyser.l"
 {
                                 return USING;
                             }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 37 ".\\lexical-analyser.l"
+#line 39 ".\\lexical-analyser.l"
 {
                                 return NAMESPACE;
                             }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 40 ".\\lexical-analyser.l"
+#line 42 ".\\lexical-analyser.l"
 {
                                 return STD;
                             }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 43 ".\\lexical-analyser.l"
+#line 45 ".\\lexical-analyser.l"
 {
                                 return MAIN;
                             }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 46 ".\\lexical-analyser.l"
+#line 48 ".\\lexical-analyser.l"
 {
                                 return RETURN;
                             }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 49 ".\\lexical-analyser.l"
+#line 51 ".\\lexical-analyser.l"
 {
                                 return CIN;
                             }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 52 ".\\lexical-analyser.l"
+#line 54 ".\\lexical-analyser.l"
 {
                                 return COUT;
                             }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 55 ".\\lexical-analyser.l"
+#line 57 ".\\lexical-analyser.l"
 {
                                 return OPEN_COND;
                             }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 58 ".\\lexical-analyser.l"
+#line 60 ".\\lexical-analyser.l"
 {
                                 return CLOSE_COND;
                             }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 61 ".\\lexical-analyser.l"
+#line 63 ".\\lexical-analyser.l"
 {
                                 return OPEN_BLOCK;
                             }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 64 ".\\lexical-analyser.l"
+#line 66 ".\\lexical-analyser.l"
 {
                                 return CLOSE_BLOCK;
                             }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 67 ".\\lexical-analyser.l"
+#line 69 ".\\lexical-analyser.l"
 {
                                 return INSTR_DELIM;
                             }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 70 ".\\lexical-analyser.l"
+#line 72 ".\\lexical-analyser.l"
 {
                                 return ASSIGN_OP;
                             }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 73 ".\\lexical-analyser.l"
+#line 75 ".\\lexical-analyser.l"
 {
                                 return ADD;
                             }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 76 ".\\lexical-analyser.l"
+#line 78 ".\\lexical-analyser.l"
 {
                                 return SUB;
                             }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 79 ".\\lexical-analyser.l"
+#line 81 ".\\lexical-analyser.l"
 {
                                 return MUL;
                             }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 82 ".\\lexical-analyser.l"
+#line 84 ".\\lexical-analyser.l"
 {
                                 return DIV;
                             }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 85 ".\\lexical-analyser.l"
+#line 87 ".\\lexical-analyser.l"
 {
                                 return LEFT_SHIFT;
                             }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 88 ".\\lexical-analyser.l"
+#line 90 ".\\lexical-analyser.l"
 {
                                 return RIGHT_SHIFT;
                             }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 91 ".\\lexical-analyser.l"
+#line 93 ".\\lexical-analyser.l"
 {
                                 return INT_TYPE;
                             }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 94 ".\\lexical-analyser.l"
+#line 96 ".\\lexical-analyser.l"
 {
+                                strcpy(yylval.varname, yytext);
                                 return ID;
                             }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 97 ".\\lexical-analyser.l"
+#line 100 ".\\lexical-analyser.l"
 {
+                                strcpy(yylval.varname, yytext);
                                 return CONST;
                             }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 100 ".\\lexical-analyser.l"
+#line 104 ".\\lexical-analyser.l"
 {
                                 yyerror("lexical error");
-                                exit(-1);
                             }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 104 ".\\lexical-analyser.l"
+#line 107 ".\\lexical-analyser.l"
 ECHO;
 	YY_BREAK
-#line 893 "lex.yy.c"
+#line 896 "lex.yy.c"
 			case YY_STATE_EOF(INITIAL):
 				yyterminate();
 
@@ -1773,10 +1776,11 @@ int main()
 	return 0;
 	}
 #endif
-#line 104 ".\\lexical-analyser.l"
+#line 107 ".\\lexical-analyser.l"
 
 
 void yyerror(char *s)
 {
     fprintf(stderr, "error: %s:%d\n", s, yylineno);
+    exit(-1);
 }
